@@ -467,86 +467,172 @@
   
   <section id="overview">
     <h2>Project Overview</h2>
-    <p>
-      <!-- TODO -->
-    </p>
-    <h2>Chip Photo</h2>
-    <!-- TODO -->
+    <p class="instruction-text">[Replace with project introduction: Describe the motivation, objectives, and overview of your chip design. Explain why this project is important and what problems it aims to solve.]</p>
     <!-- <img src="../images/microgpu/chip_photo.jpg" alt="microGPU die photo"> -->
   </section>
   
   <section id="system-arch">
     <img src="../images/microgpu/block_diagram.png" alt="microGPU block diagram">
-    <!-- TODO -->
-    <h2>Rendering Engine</h2>
-      <h3>Input Assembler</h3>
-      <h3>Vertex Shader</h3>
-      <h3>Backface Culling & Lighting Module</h3>
-      <h3>Rasterizer</h3>
-      <h3>VGA Controller</h3>
-      <h3>Pixel Module</h3>
+    <h2>System Architecture</h2>
+    <p class="instruction-text">[Replace with system architecture description: Explain the overall architecture, main functional blocks, and how they interact. Include block diagrams and architectural decisions.]</p>
+      <!-- TODO -->
+      <h3>Rendering Engine</h3>
+        <h4>Input Assembler</h4>
+        <h4>Vertex Shader</h4>
+        <h4>Backface Culling & Lighting Module</h4>
+        <h4>Rasterizer</h4>
+        <h4>VGA Controller</h4>
+        <h4>Pixel Module</h4>
 
-    <h2>Memory</h2>
-      <h3>Memory Controller</h3>
-      <h3>SRAM Macros</h3>
+      <h3>Memory</h3>
+        <h4>Memory Controller</h4>
+        <h4>SRAM Macros</h4>
 
-    <h2>System Modules</h2>
-      <h3>Scan Chain</h3>
-      <h3>Test FSM</h3>
-      <h3>Clock Generators</h3>
+      <h3>System Modules</h3>
+        <h4>Scan Chain</h4>
+        <h4>Test FSM</h4>
+        <h4>Clock Generators</h4>
   </section>
   
   <section id="design-flow">
+    <h2>Design Flow</h2>
+    <p class="instruction-text">[Replace with design flow description: Detail the steps from RTL design to tape-out, including synthesis, place-and-route, verification, and signoff processes.]</p>
     <!-- TODO: design flow pic-->
-    <h2>Software Golden Model</h2>
-    <h2>Frontend Design</h2>
-    <h2>Backend Design</h2>
-      <h3>Automatic Place & Route</h3>
-      <h3>I/O Port Integration</h3>
-      <h3>Sealring & Dummy</h3>
+      <h3>Software Golden Model</h3>
+      <h3>Frontend Design</h3>
+      <h3>Backend Design</h3>
+        <h4>Automatic Place & Route</h4>
+        <h4>I/O Port Integration</h4>
+        <h4>Sealring & Dummy</h4>
   </section>
 
   <section id="software">
+    <h2>Software & Testing Flow</h2>
     <img src="../images/microgpu/demo_diagram.png" alt="microGPU test diagram">
     <!-- TODO -->
-    <h2>FPGA Transmitter</h2>
-      <h3>Software</h3>
-      <h3>Hardware</h3>
-        <h4>Clock Generator Parameters</h4>
-    <h2>FPGA VGA DAC</h2>
+      <h3>FPGA Transmitter</h3>
+        <h4>Software</h4>
+        <h4>Hardware</h4>
+          <h5>Clock Generator Parameters</h5>
+      <h3>FPGA VGA DAC</h3>
+      <h3>Testing Methodology</h3>
+        <h4>Pre-silicon</h4>
+        <h4>Post-silicon</h4>
 
   </section>
 
   <section id="pcb">
     <!-- TODO -->
-    <h2>Power</h2>
-    <h2>Chip & I/O</h2>
-    <h2>Level Shifter</h2>
+    <h2>PCB Design</h2>
+    <p class="instruction-text">[Replace with PCB design description: Detail the test board architecture, power delivery, signal integrity considerations, and measurement infrastructure.]</p>
+    <h3>Board Architecture</h3>
+    <p class="instruction-text">[Describe PCB layout, connector pinout, external components, and interface circuits.]</p>
+    <h3>Power Distribution</h3>
+    <p class="instruction-text">[Explain power supply design, voltage regulators, decoupling strategy, and current monitoring.]</p>
 
   </section>
   
   <section id="demo">
-    <h2>Demo Video</h2>
+    <h2>Demonstration</h2>
     <!-- TODO -->
+    <h3>Video Demonstration</h3>
     <!-- <iframe width="100%" height="400" src="https://www.youtube.com/embed/rGpk3MRSOx4?start=1" title="YouTube video" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe> -->
   </section>
 
   <section id="chip-spec">
     <!-- TODO -->
-    <!-- spec table-->
+    <h2>Chip Specifications</h2>
+    <p class="instruction-text">[Replace with chip specifications: Provide detailed technical specifications and measured performance metrics.]</p>
+    
+    <table class="specs-table">
+      <tr>
+        <th>Parameter</th>
+        <th>Specification</th>
+      </tr>
+      <tr>
+        <td>Technology</td>
+        <td>[e.g., TSMC 65nm LP]</td>
+      </tr>
+      <tr>
+        <td>Die Size</td>
+        <td>[e.g., 2.5mm × 2.5mm]</td>
+      </tr>
+      <tr>
+        <td>Gate Count</td>
+        <td>[e.g., ~180,000 gates]</td>
+      </tr>
+      <tr>
+        <td>Operating Frequency</td>
+        <td>[e.g., 100 MHz]</td>
+      </tr>
+      <tr>
+        <td>Supply Voltage</td>
+        <td>[e.g., 1.2V core, 2.5V I/O]</td>
+      </tr>
+      <tr>
+        <td>Power Consumption</td>
+        <td>[e.g., 85 mW typical]</td>
+      </tr>
+      <tr>
+        <td>Performance Metric</td>
+        <td>[e.g., throughput, latency]</td>
+      </tr>
+      <tr>
+        <td>Package</td>
+        <td>[e.g., QFN-64]</td>
+      </tr>
+    </table>
 
   </section>
 
   <section id="conclusion">
-    <!-- TODO -->
+    <h2>Conclusions</h2>
+    <p class="instruction-text">[Replace with conclusions: Summarize achievements, lessons learned, challenges overcome, and potential future improvements.]</p>
+    
+    <h3>Key Achievements</h3>
+    <p class="instruction-text">[List major accomplishments and successful design outcomes.]</p>
+    
+    <h3>Lessons Learned</h3>
+    <p class="instruction-text">[Discuss important insights gained during the design process.]</p>
+    
+    <h3>Future Work</h3>
+    <p class="instruction-text">[Describe potential enhancements and next-generation features.]</p>
   </section>
 
   <section id="ref">
     <!-- TODO -->
+    <h2>References</h2>
+    <p class="instruction-text">[Replace with references: List academic papers, technical manuals, and other resources cited in your project.]</p>
+    <ol style="margin-left: 25px; color: var(--text-gray);">
+      <li style="margin-bottom: 12px;">[Reference 1: Author, Title, Publication, Year]</li>
+      <li style="margin-bottom: 12px;">[Reference 2: Author, Title, Publication, Year]</li>
+      <li style="margin-bottom: 12px;">[Reference 3: Author, Title, Publication, Year]</li>
+    </ol>
   </section>
 
   <section id="ack">
-
+    <h2>Acknowledgments</h2>
+    <p class="instruction-text">[Replace with acknowledgments: Thank advisors, sponsors, lab staff, and others who contributed to the project.]</p>
+    
+    <h3>Team Members</h3>
+    <div class="team-grid">
+      <div class="team-member">
+        <strong>[Name]</strong>
+        <span>[Role/Contribution]</span>
+      </div>
+      <div class="team-member">
+        <strong>[Name]</strong>
+        <span>[Role/Contribution]</span>
+      </div>
+      <div class="team-member">
+        <strong>[Name]</strong>
+        <span>[Role/Contribution]</span>
+      </div>
+      <div class="team-member">
+        <strong>[Name]</strong>
+        <span>[Role/Contribution]</span>
+      </div>
+    </div>
   </section>
   
   <section id="conclusions">
