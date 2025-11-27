@@ -277,6 +277,26 @@
       line-height: 1.8;
       margin-bottom: 16px;
     }
+
+    .list {
+        margin-left: 0;
+        padding-left: 0;
+        list-style-position: inside;
+    }
+
+    .matrix {
+      display: inline-grid;
+      grid-template-columns: repeat(4, 1fr);  /* 4 equal-width columns */
+      column-gap: 0.75rem;
+      row-gap: 0.25rem;
+      padding: 4px 8px;
+      border-left: 2px solid black;   /* [ */
+      border-right: 2px solid black;  /* ] */
+    }
+    .matrix-cell {
+      text-align: center;
+      white-space: nowrap;  /* don't wrap your cos/sin terms */
+    }
     
     /* Images */
     .image-placeholder {
@@ -426,6 +446,7 @@
       .image-placeholder {height: 250px; font-size: 0.95em;}
     }
   </style>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
 </head>
 <body>
 <header>
@@ -465,13 +486,13 @@
 <div class="container">
   <a class="back" href="../index.html">Back to all projects</a>
   
-  <section id="overview">
+  <section id="introduction">
     <h2>Project Overview</h2>
     <p class="instruction-text">[Replace with project introduction: Describe the motivation, objectives, and overview of your chip design. Explain why this project is important and what problems it aims to solve.]</p>
     <!-- <img src="../images/microgpu/chip_photo.jpg" alt="microGPU die photo"> -->
   </section>
   
-  <section id="system-arch">
+  <section id="architecture">
     <img src="../images/microgpu/block_diagram.png" alt="microGPU block diagram">
     <h2>System Architecture</h2>
     <p class="instruction-text">[Replace with system architecture description: Explain the overall architecture, main functional blocks, and how they interact. Include block diagrams and architectural decisions.]</p>
@@ -499,6 +520,211 @@
     <p class="instruction-text">[Replace with design flow description: Detail the steps from RTL design to tape-out, including synthesis, place-and-route, verification, and signoff processes.]</p>
     <!-- TODO: design flow pic-->
       <h3>Software Golden Model</h3>
+      The project commenced from defining the relevant algorithms and implementing a reference software model. The model serves as the foundation of the project, proving the feasbility of the overall system architecture and validating the correctness of RTL designs. The key algorithms include 3D-2D transformation, backface culling and lighting intensity computation, and rasterization with actual pixel color computation. Implemented in C++, the Golden Model consists of three major components, model file processing, computation, and output storage.<br>
+      The application reads three files that construct a 3D model:<br>
+      <ol class="list">
+        <li>Vertex List: Defines 3D coordinates for all the vertices.</li>
+        <li>Surface List: Describes all the surfaces using the indeces of three vertices in the counterclockwise order.</li>
+        <li>Color List: Specifies the color value for each individual triangle. (For models that have a single color, this file will be skipped)</li>
+      </ol>
+      <br>
+      Algorithm Details:
+      <ol class="list">
+		<li>3D-2D Transformation</li>
+        The following matrices are constructed first
+		<br><br>
+        Object Rotation is with respect to its center.
+        <br>
+        Rotation Z =
+        <span class="matrix">
+          <span class="matrix-cell">\( \cos(\text{rot}_z) \)</span>
+          <span class="matrix-cell">\( -\sin(\text{rot}_z) \)</span>
+          <span class="matrix-cell">\( 0 \)</span>
+          <span class="matrix-cell">\( 0 \)</span>
+
+          <span class="matrix-cell">\( \sin(\text{rot}_z) \)</span>
+          <span class="matrix-cell">\( \cos(\text{rot}_z) \)</span>
+          <span class="matrix-cell">\( 0 \)</span>
+          <span class="matrix-cell">\( 0 \)</span>
+
+          <span class="matrix-cell">\( 0 \)</span>
+          <span class="matrix-cell">\( 0 \)</span>
+          <span class="matrix-cell">\( 1 \)</span>
+          <span class="matrix-cell">\( 0 \)</span>
+
+          <span class="matrix-cell">\( 0 \)</span>
+          <span class="matrix-cell">\( 0 \)</span>
+          <span class="matrix-cell">\( 0 \)</span>
+          <span class="matrix-cell">\( 1 \)</span>
+        </span>
+        <br><br>
+        Rotation Y =
+        <span class="matrix">
+          <span class="matrix-cell">\( \cos(\text{rot}_y) \)</span>
+          <span class="matrix-cell">\( 0 \)</span>
+          <span class="matrix-cell">\( \sin(\text{rot}_y) \)</span>
+          <span class="matrix-cell">\( 0 \)</span>
+
+          <span class="matrix-cell">\( 0 \)</span>
+          <span class="matrix-cell">\( 1 \)</span>
+          <span class="matrix-cell">\( 0 \)</span>
+          <span class="matrix-cell">\( 0 \)</span>
+
+          <span class="matrix-cell">\( -\sin(\text{rot}_z) \)</span>
+          <span class="matrix-cell">\( 0 \)</span>
+          <span class="matrix-cell">\( \cos(\text{rot}_z) \)</span>
+          <span class="matrix-cell">\( 0 \)</span>
+
+          <span class="matrix-cell">\( 0 \)</span>
+          <span class="matrix-cell">\( 0 \)</span>
+          <span class="matrix-cell">\( 0 \)</span>
+          <span class="matrix-cell">\( 1 \)</span>
+        </span>
+        <br><br>
+        Rotation X =
+        <span class="matrix">
+          <span class="matrix-cell">\( 1 \)</span>
+          <span class="matrix-cell">\( 0 \)</span>
+          <span class="matrix-cell">\( 0 \)</span>
+          <span class="matrix-cell">\( 0 \)</span>
+
+          <span class="matrix-cell">\( 0 \)</span>
+          <span class="matrix-cell">\( \cos(\text{rot}_x) \)</span>
+          <span class="matrix-cell">\( -\sin(\text{rot}_x) \)</span>
+          <span class="matrix-cell">\( 0 \)</span>
+
+          <span class="matrix-cell">\( 0 \)</span>
+          <span class="matrix-cell">\( \sin(\text{rot}_x) \)</span>
+          <span class="matrix-cell">\( \cos(\text{rot}_x) \)</span>
+          <span class="matrix-cell">\( 0 \)</span>
+
+          <span class="matrix-cell">\( 0 \)</span>
+          <span class="matrix-cell">\( 0 \)</span>
+          <span class="matrix-cell">\( 0 \)</span>
+          <span class="matrix-cell">\( 1 \)</span>
+        </span>
+        <br><br>
+        Translation = 
+        <span class="matrix">
+          <span class="matrix-cell">\( 1 \)</span>
+          <span class="matrix-cell">\( 0 \)</span>
+          <span class="matrix-cell">\( 0 \)</span>
+          <span class="matrix-cell">\( \text{trans}_x \)</span>
+
+          <span class="matrix-cell">\( 0 \)</span>
+          <span class="matrix-cell">\( 1 \)</span>
+          <span class="matrix-cell">\( 0 \)</span>
+          <span class="matrix-cell">\( \text{trans}_y \)</span>
+
+          <span class="matrix-cell">\( 0 \)</span>
+          <span class="matrix-cell">\( 0 \)</span>
+          <span class="matrix-cell">\( 1 \)</span>
+          <span class="matrix-cell">\( \text{trans}_z \)</span>
+
+          <span class="matrix-cell">\( 0 \)</span>
+          <span class="matrix-cell">\( 0 \)</span>
+          <span class="matrix-cell">\( 0 \)</span>
+          <span class="matrix-cell">\( 1 \)</span>
+        </span>
+        <br><br>
+        Camera Rotation uses the three orthogonal vectors to defined the viewpoint diection.
+        <br>
+        Camera Rotation = 
+        <span class="matrix">
+          <span class="matrix-cell">\( \text{camera_right}_x \)</span>
+          <span class="matrix-cell">\( \text{camera_right}_y \)</span>
+          <span class="matrix-cell">\( \text{camera_right}_z \)</span>
+          <span class="matrix-cell">\( 0 \)</span>
+
+          <span class="matrix-cell">\( \text{camera_up}_x \)</span>
+          <span class="matrix-cell">\( \text{camera_up}_y \)</span>
+          <span class="matrix-cell">\( \text{camera_up}_z \)</span>
+          <span class="matrix-cell">\( 0 \)</span>
+
+          <span class="matrix-cell">\( -\text{camera_dir}_x \)</span>
+          <span class="matrix-cell">\( -\text{camera_dir}_y \)</span>
+          <span class="matrix-cell">\( -\text{camera_dir}_z \)</span>
+          <span class="matrix-cell">\( 0 \)</span>
+
+          <span class="matrix-cell">\( 0 \)</span>
+          <span class="matrix-cell">\( 0 \)</span>
+          <span class="matrix-cell">\( 0 \)</span>
+          <span class="matrix-cell">\( 1 \)</span>
+        </span>
+        <br><br>
+        Camera Translation = 
+        <span class="matrix">
+          <span class="matrix-cell">\( 1 \)</span>
+          <span class="matrix-cell">\( 0 \)</span>
+          <span class="matrix-cell">\( 0 \)</span>
+          <span class="matrix-cell">\( -\text{camera_coord}_x \)</span>
+
+          <span class="matrix-cell">\( 0 \)</span>
+          <span class="matrix-cell">\( 1 \)</span>
+          <span class="matrix-cell">\( 0 \)</span>
+          <span class="matrix-cell">\( -\text{camera_coord}_y \)</span>
+
+          <span class="matrix-cell">\( 0 \)</span>
+          <span class="matrix-cell">\( 0 \)</span>
+          <span class="matrix-cell">\( 1 \)</span>
+          <span class="matrix-cell">\( -\text{camera_coord}_z \)</span>
+
+          <span class="matrix-cell">\( 0 \)</span>
+          <span class="matrix-cell">\( 0 \)</span>
+          <span class="matrix-cell">\( 0 \)</span>
+          <span class="matrix-cell">\( 1 \)</span>
+        </span>
+        <br><br>
+		After the rotational and translational adjustmens are completed, the 3D-2D transformation is conducted by remapping the scene to a canonical view using a perspective projection matrix. Near plane and far plane is predefined to be 1 and 50. The bounding box \(\{r, l, t, b\}\) can be computed with a Field of View value and the display aspect ratio (640/480).
+        <br>
+        Perspective = 
+        <span class="matrix">
+          <span class="matrix-cell">\( \frac{2n}{r - l} \)</span>
+          <span class="matrix-cell">\( 0 \)</span>
+          <span class="matrix-cell">\( 0 \)</span>
+          <span class="matrix-cell">\( 0 \)</span>
+
+          <span class="matrix-cell">\( 0 \)</span>
+          <span class="matrix-cell">\( \frac{2n}{t - b} \)</span>
+          <span class="matrix-cell">\( 0 \)</span>
+          <span class="matrix-cell">\( 0 \)</span>
+
+          <span class="matrix-cell">\( 0 \)</span>
+          <span class="matrix-cell">\( 0 \)</span>
+          <span class="matrix-cell">\( 0 \)</span>
+          <span class="matrix-cell">\( \frac{n + f}{n - f} \)</span>
+
+          <span class="matrix-cell">\( 0 \)</span>
+          <span class="matrix-cell">\( 0 \)</span>
+          <span class="matrix-cell">\( -1 \)</span>
+          <span class="matrix-cell">\( 0 \)</span>
+        </span>
+        <br><br>
+		At the transformation stage, two sets of new coordinates will be computed. One is the 3D coordinate in the World Space with view point corrected to the origin and facing to \(-z\), which will be used for backface culling and light intensity. The other is the 2D coordinate in the Screen Space which will be consumed by the Rasterizer. To reduce repetitive computations, the above matrices will be multiplied first and the overall transformation matrix will be applied to each of the vertices.
+		<br><br>
+		<li>Backface Culling and Light Intensity</li>
+		Norm vector for each of the sufaces are computed first by \(n = v_1 \times v_2 \quad v_1=p_1-p_0 \quad v_2=p_2-p_0\)
+		<br>
+		Backface is checked by \((n \cdot p_0) > 0\)
+		<br>
+        Light intensity is computed by first normalizing the norm vector and then perform the dot product \(n \cdot \text{light_dir}\), where the light is a directional light source and the direction is a normalized vector.
+		<br><br>
+		<li> Rasterization</li>
+		The key process in the rasterization is to determine whether a pixel locates inside a triangle. This is done by evaluating cross products from the point with the three edges.
+		<br>
+        \(w_0 = (p - p_0) \times \text{edge}_0\)
+		<br>
+        \(w_1 = (p - p_1) \times \text{edge}_1\)
+		<br>
+        \(w_2 = (p - p_2) \times \text{edge}_2\)
+		<br>
+		A pixel is considered inside the triangle if all three edge functions have the same sign.
+		<br>
+		To efficiently evalutate these functions for every pixel, we precompute the partial derivatives with respect to the x and y directions. This allows us to incrementally update the edge values across the screen using only additions. Also for each triangle, we identify its bounding box first and start from the leftmost pixel for each row. 
+		<br>
+		Meanwhile, the rasterizer is responsible for depth check, ensuring that closer pixels are the ones being visible. A depth buffer is allocated for storing the current depth if a pixel is occupied.
+	  </ol>
+
       <h3>Frontend Design</h3>
       <h3>Backend Design</h3>
         <h4>Automatic Place & Route</h4>
@@ -539,7 +765,7 @@
     <!-- <iframe width="100%" height="400" src="https://www.youtube.com/embed/rGpk3MRSOx4?start=1" title="YouTube video" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe> -->
   </section>
 
-  <section id="chip-spec">
+  <section id="specs">
     <h2>Chip Specifications</h2>
     <p class="instruction-text">The chip is designed using TSMC 65nm technology with 2mm x 1mm die size including the core module and I/O pads. The chip is designed and tested to be operating with 250 MHz with rendering 24-bit colored 3D objects 60 frames per second. The maximum output display supported is 480p.</p>
     
@@ -584,7 +810,7 @@
 
   </section>
 
-  <section id="conclusion">
+  <section id="conclusions">
     <h2>Conclusions</h2>
     <p class="instruction-text">[Replace with conclusions: Summarize achievements, lessons learned, challenges overcome, and potential future improvements.]</p>
     
@@ -598,7 +824,7 @@
     <p class="instruction-text">[Describe potential enhancements and next-generation features.]</p>
   </section>
 
-  <section id="ref">
+  <section id="references">
     <!-- TODO -->
     <h2>References</h2>
     <p class="instruction-text">[Replace with references: List academic papers, technical manuals, and other resources cited in your project.]</p>
@@ -609,7 +835,7 @@
     </ol>
   </section>
 
-  <section id="ack">
+  <section id="acknowledgments">
     <h2>Acknowledgments</h2>
     <p class="instruction-text">[Replace with acknowledgments: Thank advisors, sponsors, lab staff, and others who contributed to the project.]</p>
     
