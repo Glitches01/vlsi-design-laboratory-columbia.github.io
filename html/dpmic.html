@@ -493,13 +493,13 @@
   <section id="architecture">
     <h2>System Architecture</h2>
     <p class="instruction-text">
-      Blocks designed in the proposed converter include flash ADC, power stage, gate drivers, non-overlap dead-time generator, DCVS level shifters, a PID controller, a digital PWM waveform generator, a zero-crossing detection (ZCD) module, scan chain logic, and clock generation blocks. The LCR output stage is implemented off-chip due to its large passive component requirements.
+      Blocks designed in the proposed converter include flash ADC, power stage, gate drivers, non-overlap dead-time generation, DCVS level shifters, a PID controller, a digital PWM waveform generation, a zero-crossing detection (ZCD) module, a scan chain, and a clock generation. The LCR output power stage is implemented off-chip due to its large passive component requirements.
     </p>
     <img src="../images/dpmic/block_diagram.png">
     
     <h3>Main Components</h3>
     <h4>Power Stage</h4>
-    
+    <img src="../images/dpmic/powerstage.png">
     <h4>Flash ADC</h4> 
     <p>
       The converter employs a flash ADC architecture to provide the high-speed conversion needed for fast control loops. Because a buck converter does not require high resolution, a 3-bit ADC was selected to balance performance, area, and complexity, resulting in a reasonable number of comparators. Each comparator uses a strong-arm latch topology, chosen for its high speed and low power consumption.
@@ -508,26 +508,30 @@
     <p>
       To further reduce the comparators' delay and input-referred offset, the input differential pair is upsized to improve transconductance and mitigate device mismatch. The remaining transistors in the latch are kept smaller than the input-pair to minimize parasitic capacitances, thereby lowering delay. Additionally, decoupling capacitors can be introduced to reduce clock feedthrough and kickback noise, improving overall comparator accuracy.
     </p>
+    <h4>Dead-Time Generation</h4>
     <img src="../images/dpmic/levelshifter_deadtime_buffer.png">
-    <h4>Dead-Time Generator</h4>
-
-    <h4>Gate Buffer</h4>
-
     <h4>Level Shifter</h4>
-
+    <p>
+      Because the core operates at 1 V, it cannot directly drive the 2.5 V I/O devices in the power stage. Therefore, a 1 V-to-2.5 V level shifter is used.
+    </p>
+    <h4>Gate Buffer</h4>
+    <p>
+      To drive the large MOSFET switches in the power stage, an inverter-chain gate buffer is used to minimize the overall propagation delay.
+    </p>
     <h4>PID controller</h4>
-    <p class="instruction-text">
+    <p>
       text inserted here
     </p>
-    
-    <h4>PWM Generator</h4>
-    <p class="instruction-text">
-      text inserted here
+    <h4>Digital PWM Waveform Generation</h4>
+    <p>
+      This is a 6-bit counter-based digital PWM generation.
     </p>
-
-    <h4>Scan Chain & Clock Generator</h4>
-    <p class="instruction-text">
-      text inserted here
+    <h4>Scan Chain & Clock Generation</h4>
+    <p>
+      The scan chain is used for scanning in the PID coefficients and other control bits.
+    </p>
+    <p>
+      The Clock Generation outputs a 64MHz clock signal, which is used in the ADC and DPWM.
     </p>
 
   </section>
