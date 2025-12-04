@@ -726,7 +726,7 @@
 	  </ol>
 
       <h3>Frontend Design</h3>
-      The front design process focused on RTL designs and verifications. We started from using the open source project Tiniest-GPU [] to estimate the area and timing, and shifted to design our own versions with the new architecture that supports up to 2560 vertices and 1280 triangles. As described in the system architecture, IA, VS, RA, BF and Pixel modules are implemented from scratch and VGA controller is being modified so that it oeprates correctly with 250 MHz target clock frequency. Throughout the iterations, we have encounterd several timing issues at Post-APR stage, which enforced us to revisit the RTL. These modifications included replacing square root and division modules with DW library, adding synchronization logic for the output VGA control signals and color buses and breaking long stages so that setup timing can all be met.
+      The front design process focused on RTL designs and verifications. We started from using the open source project Tiniest-GPU [1] to estimate the area and timing, and shifted to design our own versions with the new architecture that supports up to 2560 vertices and 1280 triangles. As described in the system architecture, IA, VS, RA, BF and Pixel modules are implemented from scratch and VGA controller is being modified so that it oeprates correctly with 250 MHz target clock frequency. Throughout the iterations, we have encounterd several timing issues at Post-APR stage, which enforced us to revisit the RTL. These modifications included replacing square root and division modules with DW library, adding synchronization logic for the output VGA control signals and color buses and breaking long stages so that setup timing can all be met.
 
         <table class="specs-table">
           <tr>
@@ -788,7 +788,7 @@
         The software consists of three parts
         <ol class="list">
             <li> Kernel Driver: The driver includes the ioctl method that the userspace application can dispatch data to the transmitter and initiate one tranmission. It also contains the kernel module configuration files so that when the Linux system boots up, this kernel module can be loaded automatically</li>
-            <li> USB Driver: This is obtained from [] which is used to handle the USB communication with the keyboard.</li>
+            <li> USB Driver: This is obtained from [2] which is used to handle the USB communication with the keyboard.</li>
             <li> Main Application:
                 <ul>
                     <li>Starts from loading the 3D model file using methods shared across the software reference model and the testbench driver.</li>
@@ -910,8 +910,8 @@
     <h2>References</h2>
     <p class="instruction-text">[Replace with references: List academic papers, technical manuals, and other resources cited in your project.]</p>
     <ol style="margin-left: 25px; color: var(--text-gray);">
-      <li style="margin-bottom: 12px;">[Reference 1: Author, Title, Publication, Year]</li>
-      <li style="margin-bottom: 12px;">[Reference 2: Author, Title, Publication, Year]</li>
+      <li style="margin-bottom: 12px;">[Reference 1: Matt Pongsagon, Tiniest GPU, https://github.com/pongsagon/tt07-tiniest-gpu/tree/main, 2024]</li>
+      <li style="margin-bottom: 12px;">[Reference 2: CSEE4840 by Prof. Stephen Edwards, https://www.cs.columbia.edu/~sedwards/classes/2025/4840-spring/index.html, 2025]</li>
       <li style="margin-bottom: 12px;">[Reference 3: Author, Title, Publication, Year]</li>
     </ol>
   </section>
