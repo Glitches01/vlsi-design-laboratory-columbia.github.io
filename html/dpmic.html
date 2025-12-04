@@ -483,10 +483,9 @@
     <p>
       In modern automotive and industrial electronic systems, DC-DC converters have become increasingly important due to the rising demand for high efficiency and reliable operation across a wide load and environmental conditions. Traditional analog-controlled converters often struggle to balance fast transient response, stability, and digital integration requirements in advanced CMOS processes. These challenges motivate the design of a digitally assisted power converter that can achieve both high performance and high robustness.
     </p>
-    <p class="instruction-text">
-      This project aims to design a digital PID-controlled CMOS DC-DC buck converter featuring zero-crossing detection (ZCD) for enhanced switching efficiency (in DCM). The objective is to achieve stable regulation across a wide output range while minimizing switching loss, improving transient response, and enabling seamless integration with digital system-on-chip architectures. By leveraging a digital PID controller, the converter benefits from programmability, PVT tolerance, and predictable loop dynamics compared with traditional analog control methods.
+    <p>
+      This project aims to design a digital PID-controlled CMOS DC-DC buck converter featuring zero-crossing detection (ZCD) for enhanced switching efficiency (in DCM). The objective is to achieve stable regulation across a wide output range while minimizing switching loss and conduction loss, and improving transient response. By leveraging a digital PID controller, the converter benefits from programmability, PVT tolerance, and predictable loop dynamics compared with traditional analog control methods.
     </p>
-    <!-- <p class="instruction-text">[Replace with project introduction: Describe the motivation, objectives, and overview of your chip design. Explain why this project is important and what problems it aims to solve.]</p> -->
     <img src="../images/dpmic/die_photo.png">
     <!-- <div class="image-placeholder">Insert chip photo or project overview image</div> -->
   </section>
@@ -494,28 +493,33 @@
   <section id="architecture">
     <h2>System Architecture</h2>
     <p class="instruction-text">
-      Blocks designed in the proposed converter include flash ADC, power FETs, gate drivers, non-overlap dead-time generation, DCVS level shifters, a PID controller, a digital PWM waveform generator, a zero-crossing detection (ZCD) module, scan chain logic, and clock generation blocks. The LCR output stage is implemented off-chip due to its large passive component requirements.
+      Blocks designed in the proposed converter include flash ADC, power stage, gate drivers, non-overlap dead-time generator, DCVS level shifters, a PID controller, a digital PWM waveform generator, a zero-crossing detection (ZCD) module, scan chain logic, and clock generation blocks. The LCR output stage is implemented off-chip due to its large passive component requirements.
     </p>
     <img src="../images/dpmic/block_diagram.png">
     
     <h3>Main Components</h3>
-
-    <p class="instruction-text">
+    <h4>Power Stage</h4>
+    
+    <h4>Flash ADC</h4> 
+    <p>
       The converter employs a flash ADC architecture to provide the high-speed conversion needed for fast control loops. Because a buck converter does not require high resolution, a 3-bit ADC was selected to balance performance, area, and complexity, resulting in a reasonable number of comparators. Each comparator uses a strong-arm latch topology, chosen for its high speed and low power consumption.
     </p>
     <img src="../images/dpmic/adc_cmp.png">
-    <p class="instruction-text">
-      To further reduce comparison delay and input-referred offset, the input differential pair is upsized to improve transconductance and mitigate device mismatch. The remaining transistors in the latch are kept smaller than the input-pair to minimize parasitic capacitances, thereby lowering delay. Additionally, decoupling capacitors can be introduced to reduce clock feedthrough and kickback noise, improving overall comparator accuracy.
+    <p>
+      To further reduce the comparators' delay and input-referred offset, the input differential pair is upsized to improve transconductance and mitigate device mismatch. The remaining transistors in the latch are kept smaller than the input-pair to minimize parasitic capacitances, thereby lowering delay. Additionally, decoupling capacitors can be introduced to reduce clock feedthrough and kickback noise, improving overall comparator accuracy.
     </p>
     <img src="../images/dpmic/levelshifter_deadtime_buffer.png">
-    <!-- <div class="image-placeholder">Insert block diagram</div> -->
+    <h4>Dead-Time Generator</h4>
+
+    <h4>Gate Buffer</h4>
+
+    <h4>Level Shifter</h4>
 
     <h4>PID controller</h4>
     <p class="instruction-text">
       text inserted here
     </p>
-
-
+    
     <h4>PWM Generator</h4>
     <p class="instruction-text">
       text inserted here
