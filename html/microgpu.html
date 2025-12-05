@@ -501,7 +501,11 @@
         <h4>Input Assembler</h4> <p> Zhelin Su </p>
         <h4>Vertex Shader</h4>
 			<p> The vertex shader is responsible for the all 3D-2D vertex transformations. VS operates in the region that VGA is blank so it won't interferece with the current triangle rasterization process. It starts from the poping FIFO inside IA to read the new configuration parameters if any, and then constructs the transformation matrix using algorithms described in the Software & Testing section. After the 3D viewpoint correction matrix and overall 2D transformation matrix are constructed and stored, it will start to read loaded vertices from memory and completes the matrix-vector multiplication. To expidate the process, we instantiated 4 of the 4-pair-input fully combinational MAC, so that each 4x4 by 4x1 multiplcation can be computed in 1 cycle. The VS also includes 3 DW_div_seq modules to normalize the correct 3D vertices with respected to the W coordinate. The pipeline starts from 3D view point correction, and while it's sent to the normalization stage, the MAC modules are used by the 2D transformation. A LUT is also constructed for providing the sin function output for angles ranges from \(0-90^{\circ}\). After all the triangles are being processed and sent to memory, it asserts a valid signal to start off BF work.</p>
-        <h4>Backface Culling & Lighting Module</h4> <p> Yuntian Hu </p>
+        <h4>Backface Culling & Lighting Module</h4> 
+	        <p> Once the vertex shader asserts a valid signal, the BF block starts to iterate over all triangles. For each triangle, it first reads the three vertex indices from the triangle index buffer and then fetches the corresponding 3D vertex coordinates from the vertex buffer.
+Using these three vertices, the module reconstructs two edge vectors and computes their cross product to obtain an unnormalized face normal. A signed dot product between this normal and one of the triangle’s vertices is then used to determine the triangle orientation. If the dot product is non-negative, the triangle is classified as a backface, and the module immediately marks it as invalid and writes a zero intensity without performing any further computation.
+For front-facing triangles (negative dot product), the module normalizes the face normal by using DW_sqrt_seq and DW_div_seq. The lighting stage computes a simple Lambertian diffuse intensity by taking the dot product between this normalized normal and a pre-normalized light direction vector. The intensity is clamped to non-negative values and stored as a per-triangle (flat) lighting value. In parallel, a 1-bit validity flag is written for each triangle to indicate whether it survived the backface culling. After all triangles have been processed, the BF module deasserts its busy signal and raises a valid signal to notify the following pipeline stages that culling and lighting are complete.
+ </p>
         <h4>Rasterizer</h4> <p> Tianyun Huang </p>
         <h4>VGA Controller</h4> <p> Yangfan Wang </p>
         <h4>Pixel Module</h4> <p> Tianyun Huang </p>
@@ -513,7 +517,11 @@
       <h3>System Modules</h3>
         <h4>Scan Chain</h4> <p> Fengze Zhong </p>
         <h4>Test FSM</h4> <p> Yuxi Zhang </p>
-        <h4>Clock Generators</h4> <p> Yuntian Hu </p>
+        <h4>Clock Generators</h4> 
+	        <p> We use this module to generate the internal clocks required by the system by configuring two parameters, fc and div. 
+The fc parameter is used to control the length of the inverter chain. Each time you increase fc, you’re effectively adding another pair of inverters into the clock path, which increases the clock delay and thus slows down the clock. Additionally, the div parameter divides the clock frequency by 2^"div" .
+The resulting clock frequency is divided by 1024 and output for oscilloscope measurement.
+ </p>
   </section>
   
   <section id="design-flow">
