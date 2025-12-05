@@ -10,6 +10,7 @@
     :root {
       --primary: #1e3a5f;
       --primary-light: #2c5282;
+      --primary-light-light: #366297;
       --accent: #5d9cec;
       --accent-light: #8ebaf5;
       --columbia-blue: #b3d9ff;
@@ -259,6 +260,14 @@
       margin-top: 36px;
       margin-bottom: 16px;
     }
+
+    h4 {
+      color: var(--primary-light-light);
+      font-size: 1.1em;
+      font-weight: 600;
+      margin-top: 16px;
+      margin-bottom: 8px;
+    }
     
     .instruction-text {
       background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
@@ -441,7 +450,7 @@
     <div class="author-info">
       <div class="authors-list">
         <a href="https://www.linkedin.com/in/hongxinxu/" target="_blank" class="author-name">Hongxin Xu</a>
-        <a href="https://linkedin.com/in/username" target="_blank" class="author-name">Andi Li</a>
+        <a href="https://www.linkedin.com/in/andili/" target="_blank" class="author-name">Andi Li</a>
         <a href="https://linkedin.com/in/username" target="_blank" class="author-name">Ziyang Wang</a>
         <a href="https://linkedin.com/in/username" target="_blank" class="author-name">Sean Chou</a>
         <a href="https://linkedin.com/in/username" target="_blank" class="author-name">Haoran Zhao</a>
@@ -471,48 +480,104 @@
   
   <section id="introduction">
     <h2>Introduction</h2>
-    <p class="instruction-text">
+    <p>
       In modern automotive and industrial electronic systems, DC-DC converters have become increasingly important due to the rising demand for high efficiency and reliable operation across a wide load and environmental conditions. Traditional analog-controlled converters often struggle to balance fast transient response, stability, and digital integration requirements in advanced CMOS processes. These challenges motivate the design of a digitally assisted power converter that can achieve both high performance and high robustness.
     </p>
-    <p class="instruction-text">
-      This project aims to design a digital PID-controlled CMOS DC-DC buck converter featuring zero-crossing detection (ZCD) for enhanced switching efficiency (in DCM). The objective is to achieve stable regulation across a wide output range while minimizing switching loss, improving transient response, and enabling seamless integration with digital system-on-chip architectures. By leveraging a digital PID controller, the converter benefits from programmability, PVT tolerance, and predictable loop dynamics compared with traditional analog control methods.
+    <p>
+      This project aims to design a digital PID-controlled CMOS DC-DC buck converter featuring zero-crossing detection (ZCD) for enhanced switching efficiency (in DCM) using TSMC 65nm process. The objective is to achieve stable regulation across a wide output range while minimizing switching loss and conduction loss, and improving transient response. By leveraging a digital PID controller, the converter benefits from programmability, PVT tolerance, and predictable loop dynamics compared with traditional analog control methods.
     </p>
-    <!-- <p class="instruction-text">[Replace with project introduction: Describe the motivation, objectives, and overview of your chip design. Explain why this project is important and what problems it aims to solve.]</p> -->
     <img src="../images/dpmic/die_photo.png">
+    <p>
+      The PWM voltage mode control is used for the proposed converter. The input voltage is 2.5V, and the output voltage can be regulated to 0.9~1.8V. The maximum load current is 500mA, with ~10mV expect voltage ripple and 100mA current ripple. The detailed specifications are listed in the "Specifications" section.
+    </p>
     <!-- <div class="image-placeholder">Insert chip photo or project overview image</div> -->
   </section>
   
   <section id="architecture">
     <h2>System Architecture</h2>
-    <p class="instruction-text">
-      Blocks designed in the proposed converter include flash ADC, power FETs, gate drivers, non-overlap dead-time generation, DCVS level shifters, a PID controller, digital PWM waveform generation, a zero-crossing detection (ZCD) module, scan chain logic, and clock generation blocks. The LCR output stage is implemented off-chip due to its large passive component requirements.
+    <p>
+      Blocks designed in the proposed converter include flash ADC, power stage, gate drivers, non-overlap dead-time generation, DCVS level shifters, a PID controller, a digital PWM waveform generation, a zero-crossing detection (ZCD) module, a scan chain, and a clock generation. The LCR output power stage is implemented off-chip due to its large passive component requirements.
     </p>
     <img src="../images/dpmic/block_diagram.png">
     
     <h3>Main Components</h3>
-    <p class="instruction-text">
+    <h4>Power Stage</h4>
+    <p>
+      The power stage consists of the high-side and low-side switches (implemented using TSMC 65 nm 2.5 V I/O devices) and an off-chip LC filter. The values of the inductor and output capacitor are determined based on charge-conservation principles and the slope calculations of the inductor current waveform. All necessary parameters are selected to ensure they are compatible with and can be directly applied to the design formulas.
+    </p>
+    <p>
+      The lengths of the switches are typically set to the minimum allowable value to minimize their turn-on resistance for a given width. The width sizing is determined by balancing conduction loss and switching loss: conduction loss decreases with increasing width, whereas switching loss increases with width. Therefore, for a given load current, there exists an optimal device width at which these two losses are equal if no other loss mechanisms are considered.
+    </p>
+    <img src="../images/dpmic/powerstage.png">
+    <p>
+      In practice, additional factors must be included, such as the power consumption of other circuit blocks and the inductor’s DCR. The former is often negligible, while the latter must be accounted for by identifying practical inductors on Digi-Key, checking their DCR specifications, and incorporating those values into simulation.
+    </p>
+    <h4>Flash ADC and Comparator</h4> 
+    <p>
       The converter employs a flash ADC architecture to provide the high-speed conversion needed for fast control loops. Because a buck converter does not require high resolution, a 3-bit ADC was selected to balance performance, area, and complexity, resulting in a reasonable number of comparators. Each comparator uses a strong-arm latch topology, chosen for its high speed and low power consumption.
     </p>
+    <p>
+      To further reduce the comparators' delay and input-referred offset, the input differential pair is upsized to improve transconductance and mitigate device mismatch. The remaining transistors in the latch are kept smaller than the input-pair to minimize parasitic capacitances, thereby lowering delay. Additionally, decoupling capacitors can be introduced to reduce clock feedthrough and kickback noise, improving overall comparator accuracy.
+    </p>
     <img src="../images/dpmic/adc_cmp.png">
-    <p class="instruction-text">
-      To further reduce comparison delay and input-referred offset, the input differential pair is upsized to improve transconductance and mitigate device mismatch. The remaining transistors in the latch are kept smaller than the input-pair to minimize parasitic capacitances, thereby lowering delay. Additionally, decoupling capacitors can be introduced to reduce clock feedthrough and kickback noise, improving overall comparator accuracy.
+    <h4>Dead-Time Generation</h4>
+    <p>
+      To reduce the additional power consumption caused by shoot-through current during switching, a dead-time generation circuit is implemented to produce two non-overlapping PWM waveforms. During the designated dead time, the gate of the power PMOSFET is held high while the gate of the power NMOSFET is kept low, ensuring that both devices cannot turn on simultaneously and eliminating shoot-through current.
+    </p>
+    <p>
+      However, this introduces a design trade-off. When the dead time is too long, the body diode of one device may conduct, causing a voltage drop and leading to extra power loss and potential device stress. For instance, if the NMOSFET body diode becomes forward-biased, the PMOSFET can experience a VDS that exceeds its nominal voltage. Prolonged or excessive dead time may therefore cause junction breakdown even when the PMOSFET is off. A commonly used guideline is to set the dead time to approximately 1% of the PWM period.
+    </p>
+    <h4>Level Shifter</h4>
+    <p>
+      Because the core operates at 1 V, the generated PWM signal is also within the 0–1 V domain and therefore cannot directly drive the 2.5 V I/O devices used in the power stage. To address this, a 1 V-to-2.5 V level shifter based on the differential cascode voltage switch (DCVS) topology is implemented.
+    </p>
+    <p>
+      To reduce shoot-through current during transitions, the pull-down transistors (M1 and M2) are sized much larger than the pull-up transistors (M3 and M4). For example, when VIN transitions from low to high, VOUTN is pulled down to ground, turning on M4, which in turn pulls VOUT up to VDD2V5 while M3 turns off. During this transition, there can be a short interval in which both M1 and M3 are simultaneously on—specifically when VIN > Vth1 and VOUT < (VDD2V5 − |Vth3|). By making the pull-down devices stronger than the pull-up devices, the middle node is discharged more quickly, reducing the duration of this short-circuit condition and thereby lowering shoot-through current.
     </p>
     <img src="../images/dpmic/levelshifter_deadtime_buffer.png">
-    <!-- <div class="image-placeholder">Insert block diagram</div> -->
+    <h4>Gate Buffer</h4>
+    <p>
+      To drive the large MOSFET switches in the power stage, an inverter-chain gate buffer is employed to minimize overall propagation delay. The optimal sizing ratio k and the number of stages n are obtained by minimizing the total path delay (i.e., setting the derivative of the delay expression to zero). Although the theoretical optimum for the stage ratio is e, a larger even value k=4 is used in practice to account for non-idealities beyond gate capacitance and ensure better matching.
+    </p>
+    <h4>PID Controller</h4>
+    <p>
+      text inserted here
+    </p>
+    <h4>Digital PWM Waveform Generation</h4>
+    <p>
+      This is a 6-bit counter-based digital PWM generation, working at 64MHz.
+    </p>
+    <h4>Scan Chain & Clock Generation</h4>
+    <p>
+      The scan chain is used for scanning in the three 16-bit PID coefficients (ki, kp, and kd) and other control bits.
+    </p>
+    <p>
+      The clock generation outputs a 64MHz clock signal, which is used in the ADC and DPWM.
+    </p>
+
   </section>
   
   <section id="design-flow">
     <h2>Design Flow</h2>
     <p class="instruction-text">[Replace with design flow description: Detail the steps from RTL design to tape-out, including synthesis, place-and-route, verification, and signoff processes.]</p>
     <img src="../images/dpmic/design_flow.png">
-    <h3>RTL Design</h3>
-    <p class="instruction-text">[Describe RTL design methodology, HDL used, simulation approach, and verification strategy.]</p>
-    
+    <h3>Schematic and RTL Design</h3>
+    <p>
+      [Describe RTL design methodology, HDL used, simulation approach, and verification strategy.]
+    </p>
     <h3>Physical Design</h3>
-    <p class="instruction-text">[Explain physical implementation: floorplanning, placement, clock tree synthesis, routing, and timing closure.]</p>
+    <p>
+      [Explain physical implementation: floorplanning, placement, clock tree synthesis, routing, and timing closure.]
+    </p>
     <img src="../images/dpmic/floor_plan.png">
     <img src="../images/dpmic/chip_layout.png">
-    <!-- <div class="image-placeholder">Insert layout screenshot</div> -->
+    <p>
+      The top-level post-layout simulation results are shown as follows.
+    </p>
+    <img src="../images/dpmic/post_layout_sim.png">
+    <p align="center">
+      <img src="../images/dpmic/efficiency.png" width="60%">
+    </p>
   </section>
   
   <section id="software">
@@ -528,7 +593,7 @@
   
   <section id="pcb">
     <h2>PCB Design</h2>
-    <p class="instruction-text">[Replace with PCB design description: Detail the test board architecture, power delivery, signal integrity considerations, and measurement infrastructure.]</p>
+    <p class="instruction-text">[testing:::: Replace with PCB design description: Detail the test board architecture, power delivery, signal integrity considerations, and measurement infrastructure.]</p>
     
     <h3>Board Architecture</h3>
     <p class="instruction-text">[Describe PCB layout, connector pinout, external components, and interface circuits.]</p>
@@ -551,7 +616,9 @@
   
   <section id="specs">
     <h2>Chip Specifications</h2>
-    <p class="instruction-text">[Replace with chip specifications: Provide detailed technical specifications and measured performance metrics.]</p>
+    <p>
+      The chip specifications are listed in the following table.
+    </p>
     
     <table class="specs-table">
       <tr>
@@ -564,7 +631,7 @@
       </tr>
       <tr>
         <td>Die Size</td>
-        <td>2mm × 2mm</td>
+        <td>2mm × 1mm</td>
       </tr>
       <tr>
         <td>Input Voltage</td>
@@ -579,16 +646,20 @@
         <td>1V core, 2.5V I/O</td>
       </tr>
       <tr>
+        <td>Maximum Load Current</td>
+        <td>500mA</td>
+      </tr>
+      <tr>
         <td>Output Voltage Ripple</td>
-        <td>10mV</td>
+        <td>~10mV</td>
       </tr>
       <tr>
         <td>Current Ripple</td>
-        <td>100mA</td>
+        <td>~100mA</td>
       </tr>
       <tr>
         <td>Switching Frequency</td>
-        <td>1MHz</td>
+        <td>~1MHz</td>
       </tr>
       <tr>
         <td>Package</td>
@@ -623,33 +694,46 @@
   
   <section id="acknowledgments">
     <h2>Acknowledgments</h2>
-    <p class="instruction-text">[Replace with acknowledgments: Thank advisors, sponsors, lab staff, and others who contributed to the project.]</p>
-    
+    <p>
+      We would like to thank everyone who supported us throughout this project and made this work possible.
+    </p>
+    <p>
+      We are especially grateful to our course advisor, Prof. Mingoo Seok, for giving us the invaluable opportunity to participate in this class and experience our first-ever tape-out. He proposed the project topic, met with us weekly to review our progress, and guided us with his technical expertise and extensive experience in chip design.
+    </p>
+    <p>
+      Special thanks go to Yichen Xu, who has a solid power management IC background and was consistently available to answer our questions and help us overcome critical challenges throughout the design process.
+    </p>
+    <p>
+      We also thank our teaching assistants, Mosom Jana, Da Won Kim, and Chuan-Tung Lin, for providing us with technical resources and insightful suggestions.
+    </p>
+    <p>
+      Finally, we would like to express our sincere appreciation to Apple Inc. for their generous support and sponsorship, without which this project would not have been possible. We further extend our gratitude to the Apple engineers who participated in our design reviews and offered invaluable feedback.
+    </p>
     <h3>Team Members</h3>
     <div class="team-grid">
       <div class="team-member">
         <strong>Hongxin Xu</strong>
-        <span>[Role/Contribution]</span>
+        <span>Analog Blocks Design, Physical Design, PCB Design and Test</span>
       </div>
       <div class="team-member">
         <strong>Andi Li</strong>
-        <span>[Role/Contribution]</span>
+        <span>Digial Blocks Design, Physical Design, PCB Design and Test</span>
       </div>
       <div class="team-member">
         <strong>Ziyang Wang</strong>
-        <span>[Role/Contribution]</span>
+        <span>Analog and Digital Blocks Design, Physical Design</span>
       </div>
       <div class="team-member">
         <strong>Sean Chou</strong>
-        <span>[Role/Contribution]</span>
+        <span>Analog Blocks Design, Physical Design, PCB Design and Test</span>
       </div>
       <div class="team-member">
         <strong>Haoran Zhao</strong>
-        <span>[Role/Contribution]</span>
+        <span>Analog Blocks Design, Physical Design</span>
       </div>
       <div class="team-member">
         <strong>Yuxiao Ma</strong>
-        <span>[Role/Contribution]</span>
+        <span>Analog Blocks Design, Physical Design</span>
       </div>
     </div>
   </section>
