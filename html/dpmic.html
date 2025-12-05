@@ -508,8 +508,14 @@
     <p>
       To further reduce the comparators' delay and input-referred offset, the input differential pair is upsized to improve transconductance and mitigate device mismatch. The remaining transistors in the latch are kept smaller than the input-pair to minimize parasitic capacitances, thereby lowering delay. Additionally, decoupling capacitors can be introduced to reduce clock feedthrough and kickback noise, improving overall comparator accuracy.
     </p>
-    <h4>Dead-Time Generation</h4>
     <img src="../images/dpmic/levelshifter_deadtime_buffer.png">
+    <h4>Dead-Time Generation</h4>
+    <p>
+      To reduce the additional power consumption caused by shoot-through current during switching, a dead-time generation circuit is implemented to produce two non-overlapping PWM waveforms. During the designated dead time, the gate of the power PMOSFET is held high while the gate of the power NMOSFET is kept low, ensuring that both devices cannot turn on simultaneously and eliminating shoot-through current.
+    </p>
+    <p>
+      However, this introduces a design trade-off. When the dead time is too long, the body diode of one device may conduct, causing a voltage drop and leading to extra power loss and potential device stress. For instance, if the NMOSFET body diode becomes forward-biased, the PMOSFET can experience a VDS that exceeds its nominal voltage. Prolonged or excessive dead time may therefore cause junction breakdown even when the PMOSFET is off. A commonly used guideline is to set the dead time to approximately 1% of the PWM period.
+    </p>
     <h4>Level Shifter</h4>
     <p>
       Because the core operates at 1 V, it cannot directly drive the 2.5 V I/O devices in the power stage. Therefore, a 1 V-to-2.5 V level shifter is used.
