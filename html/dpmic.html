@@ -503,7 +503,7 @@
     <h3>Main Components</h3>
     <h4>Power Stage</h4>
     <p>
-      The power stage consists of the high-side and low-side switches (implemented using TSMC 65 nm 2.5 V I/O devices) and an off-chip LC filter. The values of the inductor and output capacitor are determined based on charge-conservation principles and the slope calculations of the inductor current waveform. All necessary parameters are selected to ensure they are compatible with and can be directly applied to the design formulas.
+      The power stage consists of the high-side and low-side switches (implemented using TSMC 65 nm 2.5V I/O devices) and an off-chip LC filter. The values of the inductor and output capacitor are determined based on charge-conservation principles and the slope calculations of the inductor current waveform. All necessary parameters are selected to ensure they are compatible with and can be directly applied to the design formulas.
     </p>
     <p>
       The lengths of the switches are typically set to the minimum allowable value to minimize their turn-on resistance for a given width. The width sizing is determined by balancing conduction loss and switching loss: conduction loss decreases with increasing width, whereas switching loss increases with width. Therefore, for a given load current, there exists an optimal device width at which these two losses are equal if no other loss mechanisms are considered.
@@ -529,7 +529,7 @@
     </p>
     <h4>Level Shifter</h4>
     <p>
-      Because the core operates at 1 V, the generated PWM signal is also within the 0–1 V domain and therefore cannot directly drive the 2.5 V I/O devices used in the power stage. To address this, a 1 V-to-2.5 V level shifter based on the differential cascode voltage switch (DCVS) topology is implemented.
+      Because the core operates at 1V, the generated PWM signal is also within the 0–1V domain and therefore cannot directly drive the 2.5V I/O devices used in the power stage. To address this, a 1V-to-2.5V level shifter based on the differential cascode voltage switch (DCVS) topology is implemented.
     </p>
     <p>
       To reduce shoot-through current during transitions, the pull-down transistors (M1 and M2) are sized much larger than the pull-up transistors (M3 and M4). For example, when VIN transitions from low to high, VOUTN is pulled down to ground, turning on M4, which in turn pulls VOUT up to VDD2V5 while M3 turns off. During this transition, there can be a short interval in which both M1 and M3 are simultaneously on—specifically when VIN > Vth1 and VOUT < (VDD2V5 − |Vth3|). By making the pull-down devices stronger than the pull-up devices, the middle node is discharged more quickly, reducing the duration of this short-circuit condition and thereby lowering shoot-through current.
@@ -539,20 +539,24 @@
     <p>
       To drive the large MOSFET switches in the power stage, an inverter-chain gate buffer is employed to minimize overall propagation delay. The optimal sizing ratio k and the number of stages n are obtained by minimizing the total path delay (i.e., setting the derivative of the delay expression to zero). Although the theoretical optimum for the stage ratio is e, a larger even value k=4 is used in practice to account for non-idealities beyond gate capacitance and ensure better matching.
     </p>
+    <h4>Zero-Crossing Detection</h4>
+    <p>
+      When the converter operates in DCM, the inductor current can reverse direction, which degrades efficiency. To mitigate this issue, a zero-crossing detection (ZCD) module is added. By sensing the switching node VX​ through a comparator, the ZCD logic determines whether the NMOS switch should be turned off. In addition, a freewheel switch is added to short the inductor and dissipate the residual energy stored in it.
+    </p>
     <h4>PID Controller</h4>
     <p>
-      text inserted here
+      In digitally controlled DC-DC converters, a Proportional–Integral–Derivative (PID) controller is commonly employed to regulate the output voltage. The proportional term provides immediate correction based on the voltage error, the integral term removes steady-state offset by accumulating long-term error, and the derivative term enhances transient response by reacting to rapid changes in the output. In this design, the PID controller operates at 1MHz, as it is triggered by the 64MHz DPWM every 64 clock cycles, resulting in a 1MHz PWM switching frequency. All three PID coefficients are implemented as 16-bit values and are loaded into the controller through the scan chain.
     </p>
     <h4>Digital PWM Waveform Generation</h4>
     <p>
-      This is a 6-bit counter-based digital PWM generation, working at 64MHz.
+      A counter-based Digital Pulse Width Modulation (DPWM) module is used to generate the switching signal for the power stage. In this design, the DPWM used a 6-bit up-counter clocked at 64MHz. The duty cycle is determined by comparing the counter value with a 6-bit digital control word provided by the PID controller. When the counter value is lower than the control word, the output remains high; otherwise, it switches low. Because a 6-bit counter provides 64 time slots, the resulting PWM switching frequency is 64MHz/64=1MHz. This architecture offers simple implementation, linear duty-cycle resolution, and robust operation suitable for digitally controlled DC-DC converters.
     </p>
     <h4>Scan Chain & Clock Generation</h4>
     <p>
       The scan chain is used for scanning in the three 16-bit PID coefficients (ki, kp, and kd) and other control bits.
     </p>
     <p>
-      The clock generation outputs a 64MHz clock signal, which is used in the ADC and DPWM.
+      The ring-oscillator–based clock generation block provides a 64MHz on-chip clock, which is distributed to both the ADC and the DPWM. The use of a ring oscillator enables fully integrated, compact, and low-power clock generation without requiring any off-chip components. The generated 64MHz clock ensures synchronized operation between the sampling process in the ADC and the switching control in the DPWM, supporting consistent timing for the entire digital control loop.
     </p>
 
   </section>
