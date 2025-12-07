@@ -931,8 +931,8 @@ The masked address is 0x00000001</p>
 OUTPUT_ARCH(riscv)
 MEMORY
 {
-    imem  : ORIGIN = 0x00000000, LENGTH = 0x4000          /* 32 kB */
-    dmem  : ORIGIN = 0x01000000, LENGTH = 0x4000          /* 32 kB */
+    imem  : ORIGIN = 0x00000000, LENGTH = 0x4000          /* 16 kB */
+    dmem  : ORIGIN = 0x01000000, LENGTH = 0x4000          /* 16 kB */
 }
 
 /* Stack information variables */
@@ -1419,7 +1419,7 @@ static inline void delay(int n) {
   }
   </code></pre></div>
     </details>
-    <p>The other software driver, spi_lcd_driver.h, is responsible for defining functions to control the SPI LCD backup. </p>
+    <p>The other software driver, spi_lcd_driver.h, is responsible for defining functions to control the SPI LCD backpack </p>
     <details class="code-block">
       <summary>spi_lcd_driver.h</summary>
       <div class="code-content"><pre><code>// Code based on spi_lcd.h from https://gitfront.io/r/lafis002/nsQYcfC2svzE/iRisc/
