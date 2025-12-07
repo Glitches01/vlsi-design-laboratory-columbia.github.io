@@ -888,8 +888,9 @@ The resulting clock frequency is divided by 1024 and output for oscilloscope mea
     <p class="instruction-text">[Replace with PCB design description: Detail the test board architecture, power delivery, signal integrity considerations, and measurement infrastructure.]</p>
     <h3>Schematic Design</h3> 
 		<p> As part of the class project, for the Demonstration, a PCB (Printed Circuit Board) had to be designed that would integrate our GPU chip as well as any devices that would communicate with it through its communication interfaces. An overview of our PCB is given below. </p>
+		<img src="../images/microgpu/PCB_final.png" alt="microGPU PCB_final">
 		
-		<p> The PCB has 5 main parts: the power supply, the decoupling capacitors, the level shifters, the GPU chip and the external devices. The overall PCB schematic and PCB layout are given below.  </p>
+		<p> The PCB has 5 main parts: the power supply, the decoupling capacitors, the level shifters, the GPU chip and the external devices. The overall PCB schematic are given below.  </p>
 		<img src="../images/microgpu/top_schematic.png" alt="microGPU top_schematic">
 	<h4>Power Supply</h4>
 		<p> Our primary power source is power supply. The PCB requires three distinct voltage levels: 2.5V and 1V for the chip, 3.3V for FPGA. To meet these requirements, a variable LDO was chosen for the power supply. The output voltage is set by the values of the feedback resistors. Test points are incorporated to facilitate measurement of the LDO's output during testing. The schematic of the power supply is given below. </p>
@@ -902,7 +903,12 @@ The resulting clock frequency is divided by 1024 and output for oscilloscope mea
 	<h4>Decoupling Capacitor</h4>
 		<p> Decoupling capacitors were added to ensure a stable and clean power supply to the chip. Each power domain of the chip is equipped with a 10 ÂµF capacitor, while each input power pin is provided with a 1 ÂµF capacitor. The relevant schematic is given below. </p>
 		<img src="../images/microgpu/dcap_schematic.png" alt="microGPU dcap_schematic">
-    <h3>Board Architecture</h3> <p> Zhelin Zhang </p>
+    <h3>Board Architecture</h3> 
+		<p> The PCB is organized around the central QFP-packaged renderer chip (U1), whose wide parallel data, address, and control buses are routed outward to multiple buffer/level-shifter stages (IC2–IC5), each implemented with SN74AXC8T245 bidirectional transceivers that translate between the renderer chip’s 1.8 V core I/O domain and the external connectors operating at 2.5 V or 3.3 V. 
+		<p> Along the left and bottom edges, high-density headers (J2, J3, J12, J13) expose these translated signals as clean, grouped pin banks, which each bank corresponding to one 8-bit bus segment, carrying labeled signals such as qspi_data, qspi_ctrl, or general-purpose I/O channels. Every transceiver block is paired with its own decoupling capacitors and optional domain-select jumpers that supply either 3.3 V or 2.5 V to the VCCB side depending on the required logic level. </p>
+		<p> On the right side, a set of TPS7A20 low-noise LDO regulators (IC6–IC9) generate isolated power rails (+3.7 V, +2.5 V, +1.0 V), each stabilized by input/output capacitors and fine-tuning resistors. The primary +5 V input enters through the screw terminal at the top left, feeding all regulated domains before distribution across the board. Additional capacitor arrays on the lower right provide dense high-frequency decoupling for the renderer chip’s analog and digital supply pins. </p>
+		<p> Overall, the PCB layout is cleanly partitioned into four subsystems—renderer-chip core, voltage-translation banks, regulated supply blocks, and external breakout headers—creating a structured and noise-controlled interface board where each connector pin corresponds to a level-shifted, buffered, and properly decoupled signal from the renderer chip.
+ </p>
     <p class="instruction-text">[Describe PCB layout, connector pinout, external components, and interface circuits.]</p>
     <h3>Power Distribution</h3>
     <p class="instruction-text">[Explain power supply design, voltage regulators, decoupling strategy, and current monitoring.]</p>
