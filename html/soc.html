@@ -721,14 +721,14 @@
 
 
   <h3>Software Development</h3>
-  <p class="instruction-text">
+  <p>
     Test applications are written in C and compiled using a customized RISC-V GCC toolchain
     aligned with the chip’s IMEM/DMEM memory map. The linker output is automatically
     converted into <code>test.h</code>, which contains the initialization arrays for
     instruction and data memory. These files form the common interface between software
     and the scan-based testing environment.
   </p>
-  <p class="instruction-text">
+  <p>
     The software framework allows different test programs to be executed on silicon,
     including routines that stress the CPU pipeline, memory system, or vector/AI units.
     Inline RISC-V assembly is supported for low-level testing of microarchitectural
@@ -737,7 +737,7 @@
 
 
   <h3>Testing Methodology</h3>
-  <p class="instruction-text">
+  <p>
     MATLAB scripts serialize the IMEM/DMEM initialization arrays into cycle-accurate
     scan-in command sequences. These command streams are transferred to an FPGA board
     over USB, where a Vitis-based scan controller shifts data into the chip’s scan chain.
