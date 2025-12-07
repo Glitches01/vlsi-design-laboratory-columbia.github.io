@@ -913,12 +913,14 @@ The resulting clock frequency is divided by 1024 and output for oscilloscope mea
 		<p> This shows some connections to the GPU core. The relevant schematic is given below. </p>
 		<img src="../images/microgpu/GPU_core.png" alt="microGPU GPU_core">
     <h3>Board Architecture</h3> 
+	   <p class="instruction-text">[Describe PCB layout, connector pinout, external components, and interface circuits.]</p>
 		<p> The PCB is organized around the central QFP-packaged renderer chip (U1), whose wide parallel data, address, and control buses are routed outward to multiple buffer/level-shifter stages (IC2–IC5), each implemented with SN74AXC8T245 bidirectional transceivers that translate between the renderer chip’s 1.8 V core I/O domain and the external connectors operating at 2.5 V or 3.3 V. 
 		<p> Along the left and bottom edges, high-density headers (J2, J3, J12, J13) expose these translated signals as clean, grouped pin banks, which each bank corresponding to one 8-bit bus segment, carrying labeled signals such as qspi_data, qspi_ctrl, or general-purpose I/O channels. Every transceiver block is paired with its own decoupling capacitors and optional domain-select jumpers that supply either 3.3 V or 2.5 V to the VCCB side depending on the required logic level. </p>
 		<p> On the right side, a set of TPS7A20 low-noise LDO regulators (IC6–IC9) generate isolated power rails (+3.7 V, +2.5 V, +1.0 V), each stabilized by input/output capacitors and fine-tuning resistors. The primary +5 V input enters through the screw terminal at the top left, feeding all regulated domains before distribution across the board. Additional capacitor arrays on the lower right provide dense high-frequency decoupling for the renderer chip’s analog and digital supply pins. </p>
 		<p> Overall, the PCB layout is cleanly partitioned into four subsystems—renderer-chip core, voltage-translation banks, regulated supply blocks, and external breakout headers—creating a structured and noise-controlled interface board where each connector pin corresponds to a level-shifted, buffered, and properly decoupled signal from the renderer chip.
  </p>
-    <p class="instruction-text">[Describe PCB layout, connector pinout, external components, and interface circuits.]</p>
+<img src="../images/microgpu/PCB_layout.png" alt="microGPU PCB_layout">
+ 
     <h3>Power Distribution</h3>
     <p class="instruction-text">[Explain power supply design, voltage regulators, decoupling strategy, and current monitoring.]</p>
     <p> Our <a href="https://www.mouser.com/ProductDetail/Texas-Instruments/TPS71701DCKR?qs=QZuYiDxzHahqN0uXeRKnxg%3D%3D&utm_id=22380207736&utm_source=google&utm_medium=cpc&utm_marketing_tactic=amercorp&gad_source=1&gad_campaignid=22376567996&gbraid=0AAAAADn_wf0g5UzeCVRPp0Yhb8c27LKWG&gclid=Cj0KCQjww4TGBhCKARIsAFLXndRx8_VsZd0vdCgLvQMXXQyARwInrXAWnluTTFawSqYkY-AuB1U1ylUaAhDLEALw_wcB">LDO voltage regulator</a>]
