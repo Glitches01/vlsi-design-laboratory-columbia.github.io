@@ -552,8 +552,147 @@ For front-facing triangles (negative dot product), the module normalizes the fac
 </p>
 
       <h3>Memory</h3>
-        <h4>Memory Controller</h4> <p> Yun-Rong Du </p>
-        <h4>SRAM Macros</h4> <p> Yun-Rong Du </p>
+        <h4>Memory Controller</h4>
+        The below table shows the usage of our SRAMs.
+        <table border="1" cellspacing="0" cellpadding="8" style="width: 100%; border-collapse: collapse;">
+        <thead>
+          <tr>
+            <th></th>
+            <th> Number </th>
+            <th> Write </th>
+            <th> Read </th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>index_memory</td><td>1</td><td>Scan Chain</td><td>Vertex Shader</td></tr>
+          <tr><td>vertex_memory</td><td>1</td><td>Scan Chain</td><td>Vertex Shader</td></tr>
+          <tr><td>vertex_3d_memory</td><td>1</td><td>Vertex Shader</td><td>Backface</td></tr>
+          <tr><td>vertex_2d_memory</td><td>1</td><td>Vertex Shader</td><td>Rasterizer</td></tr>
+          <tr><td>light_intensity</td><td>1</td><td>Backface</td><td>Pixel Color</td></tr>
+          <tr><td>tri_valid_memory</td><td>1</td><td>Backface</td><td>Rasterizer</td></tr>
+          <tr><td>color_memory</td><td>1</td><td>Scan Chain</td><td>Pixel Color</td></tr>
+          <tr><td>depth_buffer</td><td>1</td><td>Rasterizer</td><td>Rasterizer</td></tr>
+          <tr><td>tile_buffer</td><td>2</td><td>Rasterizer</td><td>Pixel Color</td></tr>
+        </tbody>
+        </table>
+        <p>
+          An SRAM controller is needed to switch between the two tile buffers, so that when one is read from the pixel color 
+          module for the output, the rasterizer can still work in parallel and write to another one. 
+        </p>
+        <h4>SRAM Macros</h4>
+        <p>
+          We generated the SRAM macros using the generator. The number of ports, size (width & words) are determined by 
+          the chip functionality. The mux value changes the shape of the SRAM, and is set to fit in the chip area better. 
+          We made the two buffers be able to do partial write so that it doesn't have to modify the entire line every time.
+          The table shows the spec of SRAMs we used in our design. <br>
+        </p>
+        <style>
+          table {
+            border-collapse: collapse;
+            width: 100%;
+          }
+          th, td {
+            padding: 6px ; /* ← spacing inside cells */
+          }
+        </style>
+
+        <table border="1">
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Port</th>
+            <th>Width</th>
+            <th>Words</th>
+            <th>Mux</th>
+            <th>Mask</th>
+            <th>WP</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>index_memory</td>
+            <td>sp</td>
+            <td>33</td>
+            <td>2368</td>
+            <td>16</td>
+            <td>off</td>
+            <td>8</td>
+          </tr>
+          <tr>
+            <td>vertex_memory</td>
+            <td>sp</td>
+            <td>48</td>
+            <td>1184</td>
+            <td>8</td>
+            <td>off</td>
+            <td>8</td>
+          </tr>
+          <tr>
+            <td>vertex_3d_memory</td>
+            <td>sp</td>
+            <td>48</td>
+            <td>1184</td>
+            <td>8</td>
+            <td>off</td>
+            <td>8</td>
+          </tr>
+          <tr>
+            <td>vertex_2d_memory</td>
+            <td>sp</td>
+            <td>29</td>
+            <td>1184</td>
+            <td>8</td>
+            <td>off</td>
+            <td>8</td>
+          </tr>
+          <tr>
+            <td>light_intensity</td>
+            <td>sp</td>
+            <td>10</td>
+            <td>2368</td>
+            <td>8</td>
+            <td>off</td>
+            <td>8</td>
+          </tr>
+          <tr>
+            <td>tri_valid_memory</td>
+            <td>sp</td>
+            <td>2</td>
+            <td>2368</td>
+            <td>16</td>
+            <td>off</td>
+            <td>8</td>
+          </tr>
+          <tr>
+            <td>color_memory</td>
+            <td>sp</td>
+            <td>9</td>
+            <td>2368</td>
+            <td>8</td>
+            <td>off</td>
+            <td>8</td>
+          </tr>
+          <tr>
+            <td>tile_buffer</td>
+            <td>sp</td>
+            <td>48</td>
+            <td>640</td>
+            <td>4</td>
+            <td>on</td>
+            <td>12</td>
+          </tr>
+          <tr>
+            <td>depth_buffer</td>
+            <td>dp</td>
+            <td>48</td>
+            <td>640</td>
+            <td>4</td>
+            <td>on</td>
+            <td>12</td>
+          </tr>
+        </tbody>
+      </table>
+
 
       <h3>System Modules</h3>
         <h4>Scan Chain</h4> <p> Fengze Zhong </p>
@@ -1089,7 +1228,7 @@ The resulting clock frequency is divided by 1024 and output for oscilloscope mea
       which provides us with the knowledge and skills for chip design. <br>
       Thank you TAs, Da won Kim, Mosom Jana, and Chuan-Tung Lin for the assistance on the project. 
       We are so lucky to have you answering our questions and handling the tape-out and PCB process. <br>
-      Thank you Richard Lee for the help with the lab access and pocurement. <br>
+      Thank you Richard Lee for the help with the lab access and procurement. <br>
       Also shout out to friends and seniors who gave us useful suggestions.
       Finally, huge thanks to the 6350 classmates and teammates for sharing experience and working together. <br>
       It has been a great journey and thanks for all the people who help along the way!
