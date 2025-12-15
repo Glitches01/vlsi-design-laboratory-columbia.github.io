@@ -171,8 +171,13 @@
 .nav-container::before,
 .nav-container::after{
   content: "";
-  flex: 0 0 24px;   /* 两端留 12px 缓冲，可改大一点 */
+  display: block;      /* 关键：让伪元素真的成为“可见的 flex item” */
+  flex: 0 0 48px;      /* 缓冲更大一点 */
+  width: 48px;         /* 关键：兼容性更稳 */
+  pointer-events: none;
 }
+.nav-container{ padding-right: 56px; }
+
 
 /* 可选：隐藏横向滚动条（不影响滚动） */
 .nav-container{
