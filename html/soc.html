@@ -605,6 +605,36 @@ header{
   }
 }
 
+/* ===== REMOVE the blue instruction-text container (keep content unchanged) ===== */
+.instruction-text{
+  background: transparent !important;
+  border: none !important;
+  border-left: none !important;
+  box-shadow: none !important;
+  border-radius: 0 !important;
+
+  padding: 0 !important;
+  margin: 0 0 14px !important;     /* 像普通段落一样的间距 */
+  color: var(--text-muted) !important;
+
+  text-align: left !important;
+  text-align-last: auto !important;
+}
+
+/* 里面的 strong 仍然保持正文强调 */
+.instruction-text strong{ color: var(--text) !important; }
+
+/* instruction-text 里如果有 ul/ol，给一个正常的列表缩进 */
+.instruction-text ul,
+.instruction-text ol{
+  margin: 10px 0 14px 22px !important;
+  padding: 0 !important;
+  color: var(--text-muted) !important;
+}
+
+/* 如果某些地方 instruction-text 是 div 包住表格/图片：避免“贴太紧” */
+.instruction-text > p{ margin: 0 0 14px !important; }
+.instruction-text > p:last-child{ margin-bottom: 0 !important; }
 
 
     
