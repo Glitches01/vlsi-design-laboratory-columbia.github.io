@@ -647,7 +647,23 @@ p{ color:#000 !important; }
 #demo .instruction-text figcaption{
   color: var(--text) !important;
 }
-    
+
+:root{
+  --body-size: 1.03rem;   
+}
+
+.container p:not(table p),
+.container .instruction-text p:not(table p){
+  font-size: var(--body-size) !important;
+  line-height: 1.8;
+}
+
+.container li:not(table li),
+.container .instruction-text li:not(table li){
+  font-size: var(--body-size) !important;
+  line-height: 1.8;
+}
+
   </style>
 </head>
 <body>
