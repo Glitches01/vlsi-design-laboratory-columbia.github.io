@@ -717,8 +717,6 @@ header{
                 <!-- <p>The system's processing powerhouse consists of a standard **RISC-V Core** for general-purpose computing, paired with a high-performance **Vector Coprocessor**. This coprocessor enables efficient, accelerated execution of parallel operations, crucial for demanding applications like signal processing or machine learning tasks.</p> -->
             </div>
         
-
-
             <div class="highlight-item">
                 <h4>CPU Core: <a href="https://github.com/YosysHQ/picorv32" target="_blank">picorv32</a></h4>
                 <p class="instruction-text">The system is anchored by the PicoRV32, a robust and widely adopted open-source 
@@ -736,8 +734,6 @@ header{
                 <!-- <p>The system's processing powerhouse consists of a standard **RISC-V Core** for general-purpose computing, paired with a high-performance **Vector Coprocessor**. This coprocessor enables efficient, accelerated execution of parallel operations, crucial for demanding applications like signal processing or machine learning tasks.</p> -->
             </div>
 
-      
-        
   <div class="highlight-item">
     <h4>
       Bus Interconnect:
@@ -754,7 +750,6 @@ header{
         It does not support burst transactions, out-of-order (OoO), or outstanding transactions in the AXI protocol.
       </p>
 
-     
 <p style="margin: 0 0 10px;">
   <strong>System Memory Map</strong><br>
 </p>
@@ -796,16 +791,13 @@ header{
         </tbody>
       </table>
     </div>
-
   </div>
-
 
             <div class="highlight-item">
                 <h4>Memory Subsystem: IMEM & DMEM</h4>
                 <p class="instruction-text">To maximize on-chip storage efficiency, the SoC integrates 64KB of SRAM, symmetrically divided into 32KB for Instruction Memory (IMEM) and 32KB for Data Memory (DMEM). We utilized the ARM Artisan Memory Compiler to generate these high-density, single-port memory macros. To ensure seamless connectivity, custom wrappers were developed to bridge the memory interface with the processor core. Furthermore, these wrappers facilitate system initialization, allowing instructions and data to be pre-loaded directly through the scan chain.</p>
                 <!-- <p>The design utilizes a Harvard-like architecture with separate memories for instructions and data. It includes a dedicated **32kB Instruction Memory (IMEM)** and a **32kB Data Memory (DMEM)**. This separation minimizes contention and allows simultaneous instruction fetches and data access, boosting performance.</p> -->
             </div>
-        
         
   <div class="highlight-item">
     <h4>I/O Peripherals: UART &amp; SPI</h4>
@@ -821,11 +813,8 @@ header{
         The SoC exposes an SPI interface as an external storage expansion port, designed for use cases where model parameters, lookup tables, or large input tensors exceed on-chip memory capacity. In a typical workflow, the chip can pull blocks of data over SPI into on-chip DMEM before launching compute, enabling re-parameterization (e.g., swapping CNN weights or coefficients) without rebuilding the entire on-chip image. This is a practical and widely used design point for compact accelerators: SPI provides a simple, pin-efficient, and board-friendly path to attach off-chip memory or a storage controller. For prototyping and demos, the SPI target can be implemented flexibly—an FPGA can emulate external memory behavior, or the interface can connect to other off-chip storage solutions—providing a scalable route toward larger AI workloads while keeping the on-chip design lightweight.
       </p>
     </div>
-
   </div>
 
-
-        
   <div class="highlight-item">
     <h4>DFT Module: Scan Chain, Clock Generator, Testing FSM</h4>
 
@@ -865,8 +854,6 @@ header{
        style="width: 75%; max-width: 980px; height: auto; display: block; margin: 0 auto;">
 </figure>
 
-
-
       <p style="margin: 0 0 12px;">
         During testing, we stream a serial bit pattern into <code>scan_in</code> while toggling the scan clock. After 252 shift cycles,
         the pattern propagates to all cells. When <code>scan_i0o1</code> is configured for scan-in and the load signal is pulsed, the scan
@@ -900,58 +887,43 @@ header{
       </p>
     </div>
   </div>
-
-
-
     </ul>
-    
   </section>
 
-  
-  
   <section id="design-flow">
     <h2>Design Flow</h2>
-
 <div class="instruction-text">
   <p style="margin: 0 0 12px;">
     The following diagram outlines the complete RTL-to-GDSII design flow implemented for this project.
     It highlights the transition from behavioral Verilog RTL through Synthesis and Place &amp; Route,
     utilizing industry-standard tools for verification at every stage.
   </p>
-
   <img src="../images/soc/Design Flow.png" alt="RTL-to-GDSII Design Flow"
        style="width: 65%; max-width: 900px; display: block; margin: 0 auto;">
 </div>
 
-    
 <h3>RTL Design</h3>
-
 <div class="instruction-text">
   <p style="margin-top: 0;">
     The RTL (Register Transfer Level) design serves as the core of our digital implementation,
     bridging the gap between high-level algorithms and physical hardware.
   </p>
-
 <p style="margin: 14px 0 8px;">
   <strong>Hierarchical Design &amp; Verification</strong><br>
 </p>
-
   <p>
     We adopted a rigorous <strong>Bottom-Up Implementation</strong> strategy. Design work starts with coding individual,
     low-level <strong>submodules</strong>. Once these leaf blocks are completed, they are integrated into larger parent modules,
     eventually culminating in the <strong>Top-Level</strong> SoC.
   </p>
-
   <p style="margin-bottom: 10px;">
     Verification follows a corresponding layered approach:
   </p>
-
   <ul style="margin-left: 20px; margin-bottom: 14px; color: #4a5568;">
     <li><strong>Unit-Level Verification:</strong> Submodules are first verified in isolation using dedicated testbenches to ensure local correctness.</li>
     <li><strong>Integration Verification:</strong> As blocks are assembled, verification focuses on interface protocols and data flow between modules.</li>
     <li><strong>Full-Chip Verification:</strong> The complete design is simulated (using tools like <strong>ModelSim, VCS, and Verdi</strong>) and cross-compared against the C reference model to validate system-wide functionality.</li>
   </ul>
-
   <table class="specs-table" style="margin: 0;">
     <thead>
       <tr>
@@ -975,8 +947,6 @@ header{
   </table>
 </div>
 
-
-    
     <h3>Synthesis</h3>
     <p class="instruction-text">We used Synopsys Design Compiler for logic synthesis. Before running synthesis, we prepared a complete SDC file that defined all necessary constraints, including clock definitions, clock constraints, drive and load constraints, operating conditions, and wire-load models. Specifically, the SDC file included parameters such as clock name, clock period, clock uncertainty, clock transition, as well as input and output delay constraints.
 
@@ -1010,8 +980,6 @@ Our chosen synthesis strategy followed a bottom-to-top approach. We first synthe
   <img src="../images/soc/chip_labelled.jpg" alt="Chip layout labeled"
        style="width: 90%; max-width: 900px; display: block; margin: 0 auto;">
 </div>
-
-
 
     <h4>IO Pad</h4>
 
@@ -1066,7 +1034,6 @@ Our chosen synthesis strategy followed a bottom-to-top approach. We first synthe
   </p>
 </div>
 
-
   <h4>PPA Optimization</h4>
 
 <div class="instruction-text">
@@ -1107,12 +1074,8 @@ Our chosen synthesis strategy followed a bottom-to-top approach. We first synthe
   </p>
 </div>
 
-
-    
   </section>
 
-  
-  
 <section id="software">
   <h2>Software & Testing Flow</h2>
 
@@ -1164,9 +1127,6 @@ Our chosen synthesis strategy followed a bottom-to-top approach. We first synthe
   </div>
 </section>
 
-
-    
-  
 <section id="pcb">
   <h2>PCB Design</h2>
 
@@ -1241,7 +1201,6 @@ Our chosen synthesis strategy followed a bottom-to-top approach. We first synthe
   </div>
 </section>
 
-  
   <section id="demo">
     <h2>Demonstration</h2>
 
@@ -1264,7 +1223,6 @@ Our chosen synthesis strategy followed a bottom-to-top approach. We first synthe
        style="display:block; margin:14px auto 0; width:55%; max-width:900px; height:auto;">
 </p>
 
-
   <div class="instruction-text">
   <strong>Measurement Method: CPU-only vs. CPU+VPU</strong><br>
   Each workload is executed in two modes using the <strong>same inputs</strong>, <strong>same memory map</strong>, and
@@ -1280,7 +1238,6 @@ Our chosen synthesis strategy followed a bottom-to-top approach. We first synthe
   <strong>Speedup = Cycles(CPU-only) / Cycles(CPU+VPU)</strong>.
 </div>
 
-    
     <p class="instruction-text">
     <strong>Demo Flow</strong><br>
     We prepared three workloads that cover high, medium, and low VPU utilization.
@@ -1320,9 +1277,6 @@ Our chosen synthesis strategy followed a bottom-to-top approach. We first synthe
   </figure>
 </div>
 
-
-
-    
   <h3>Demo 2 — Sobel Edge Detection (Full-frame vs. ROI-Sobel)</h3>
 
 <div class="instruction-text">
@@ -1381,8 +1335,7 @@ Our chosen synthesis strategy followed a bottom-to-top approach. We first synthe
     </figcaption>
   </figure>
 </div>
-
-    
+  
   <h3>Demo 3 — 4-Level Posterize Filter</h3>
 
 <div class="instruction-text">
@@ -1415,8 +1368,7 @@ Our chosen synthesis strategy followed a bottom-to-top approach. We first synthe
     </figcaption>
   </figure>
 </div>
-
-    
+   
   <p class="instruction-text">
     So, across these three workloads, we sweep from VPU-heavy to light, and you can directly see how higher VPU utilization gives better speedup on our architecture.
   </p>
@@ -1467,8 +1419,6 @@ Our chosen synthesis strategy followed a bottom-to-top approach. We first synthe
   </table>
 </div>
 
-    
-    
     <h3>Video Demonstration</h3>
     <div class="video-container">
       <iframe src="https://www.youtube.com/embed/qUw_6i0oMUs" title="Project demonstration video" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
@@ -1720,7 +1670,6 @@ Our chosen synthesis strategy followed a bottom-to-top approach. We first synthe
     </table>
 </section>
   
-  
   <section id="conclusions">
   <h2>Conclusions</h2>
 
@@ -1820,7 +1769,6 @@ Our chosen synthesis strategy followed a bottom-to-top approach. We first synthe
   </div>
 </section>
 
-  
   <section id="references">
   <h2>References</h2>
   <p class="instruction-text">
@@ -1845,7 +1793,6 @@ Our chosen synthesis strategy followed a bottom-to-top approach. We first synthe
   </ol>
 </section>
 
-  
   <section id="acknowledgments">
     <h2>Acknowledgments</h2>
 <p class="instruction-text">
@@ -1868,7 +1815,6 @@ Our chosen synthesis strategy followed a bottom-to-top approach. We first synthe
   this project would not have been possible.
 </p>
 
-    
     <h3>Team Members</h3>
     <div class="team-grid">
       <div class="team-member">
