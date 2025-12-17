@@ -975,7 +975,7 @@ Our chosen synthesis strategy followed a bottom-to-top approach. We first synthe
     We used Cadence Innovus for our physical design. In our place-and-route flow, the major steps included:
     loading design files, floorplanning, power routing, cell placement, pre-CTS optimization, clock tree synthesis (CTS),
     signal routing, RC parasitic extraction, filler cell insertion, design verification, and final GDS files output.
-    <br><br>
+    <br>
     The physical hierarchy of the chip consists of submodules, the top module, the chip-level module, and the IO pads.
     Our place-and-route strategy followed the same bottom-up approach used during synthesis. The Dmem and Imem blocks used
     existing layout macros, while modules such as the SPI block, scan chain, test FSM, coprocessor, and CPU core were placed
