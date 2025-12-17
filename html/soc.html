@@ -571,6 +571,39 @@
   flex: 0 0 6px;
 }
 
+/* ===== Remove the card-like container (no HTML changes) ===== */
+.container{
+  max-width: min(1100px, calc(100vw - 72px)) !important; /* 像截图一样更“文章页” */
+  margin: 28px auto 70px !important;
+
+  background: transparent !important;
+  border: none !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+
+  padding: 0 !important;  /* 让内容不再被卡片内边距包住 */
+}
+
+/* 给“正文”自己留白（替代原 container padding） */
+section{
+  padding-left: 6px !important;
+  padding-right: 6px !important;
+}
+
+/* 可选：如果你想整体更像截图的“白底文章页” */
+body{
+  background: #ffffff !important;
+}
+header{
+  background: #ffffff !important;
+}
+
+/* 可选：小屏时别贴边 */
+@media (max-width: 900px){
+  .container{
+    max-width: calc(100vw - 32px) !important;
+  }
+}
 
 
 
