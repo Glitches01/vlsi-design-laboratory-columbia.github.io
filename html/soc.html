@@ -573,8 +573,14 @@
   flex: 0 0 6px;
 }
 
+/* ===== Make正文更窄：左右留白更大 ===== */
+:root{
+  --article-width: 860px;   /* 桌面端正文最大宽度：越小每行字越少（可试 820/860/900） */
+  --article-gutter: 220px;  /* 视口两侧总留白：越大两侧空白越多（可试 180/220/260） */
+}
+
 .container{
-  max-width: min(1100px, calc(100vw - 72px)) !important; /* 像截图一样更“文章页” */
+  max-width: min(var(--article-width), calc(100vw - var(--article-gutter))) !important;
   margin: 28px auto 70px !important;
 
   background: transparent !important;
@@ -584,6 +590,7 @@
 
   padding: 0 !important;
 }
+
 
 
 
