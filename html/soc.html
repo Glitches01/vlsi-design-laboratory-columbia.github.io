@@ -574,28 +574,17 @@
 }
 
 .container{
-  max-width: min(920px, calc(100vw - 60px)) !important; 
+  max-width: min(1100px, calc(100vw - 72px)) !important; /* 像截图一样更“文章页” */
   margin: 28px auto 70px !important;
-  padding: 0 !important;
+
   background: transparent !important;
   border: none !important;
   border-radius: 0 !important;
   box-shadow: none !important;
+
+  padding: 0 !important;
 }
 
-/* 中屏幕（笔记本宽度）时略微收一点空白 */
-@media (max-width: 1200px){
-  .container{
-    max-width: min(920px, calc(100vw - 96px)) !important; /* 左右各约 48px */
-  }
-}
-
-/* 小屏手机时自动贴边，不挤 */
-@media (max-width: 900px){
-  .container{
-    max-width: calc(100vw - 32px) !important; /* 左右各 16px */
-  }
-}
 
 
 /* 给“正文”自己留白（替代原 container padding） */
