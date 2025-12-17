@@ -461,31 +461,38 @@
       padding: 0;
     }
 
-    /* ===== Team Members: keep card style, force 5 in one row ===== */
-.team-grid{
-  display: grid !important;
-  grid-template-columns: repeat(5, minmax(0, 1fr)) !important; /* 强制5列同一行 */
-  gap: 16px !important;
-  margin: 20px 0 !important;
-}
-
-/* 防止卡片内容把列撑爆导致掉行 */
-.team-member{ min-width: 0 !important; }
-.team-member span{ word-break: break-word; }
-
-/* 小屏放不下时：仍保持一行，允许横向滑动（卡片形式不变） */
-@media (max-width: 1100px){
-  .team-grid{
-    grid-auto-flow: column !important;
-    grid-auto-columns: minmax(220px, 1fr) !important;
-    grid-template-columns: none !important;
-
-    overflow-x: auto !important;
-    overflow-y: hidden !important;
-    -webkit-overflow-scrolling: touch;
-    padding-bottom: 8px;
-  }
-}
+    /* Team grid cards */
+    .team-grid{
+      display:grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 16px;
+      margin: 20px 0;
+    }
+    .team-member{
+      background: var(--panel-2);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 18px 18px;
+      text-align: center;
+      transition: transform .15s ease, box-shadow .15s ease, border-color .15s ease, background .15s ease;
+    }
+    .team-member:hover{
+      transform: translateY(-2px);
+      border-color: var(--border-strong);
+      background: #fff;
+      box-shadow: 0 12px 30px rgba(0,0,0,.08);
+    }
+    .team-member strong{
+      color: var(--text);
+      font-size: 1.06rem;
+      display:block;
+      margin-bottom: 6px;
+    }
+    .team-member span{
+      color: var(--text-muted);
+      font-size: .95rem;
+      display:block;
+    }
 
 
 
